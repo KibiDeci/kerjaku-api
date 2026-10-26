@@ -17,14 +17,12 @@
     "@capacitor/haptics": "8.0.2",
     "@capacitor/keyboard": "8.0.5",
     "@capacitor/status-bar": "8.0.3",
-    "@ionic/react": "^9.0.0",
-    "@ionic/react-router": "^9.0.0",
+    "axios": "^1.20.0",
     "bootstrap": "^5.3.8",
-    "ionicons": "^8.1.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "react-router": "^6.30.0",
-    "react-router-dom": "^6.30.0"
+    "react-router": "^6.30.6",
+    "react-router-dom": "^6.30.6"
   },
   "devDependencies": {
     "@capacitor/cli": "8.5.1",

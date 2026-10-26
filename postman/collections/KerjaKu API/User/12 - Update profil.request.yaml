@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{base_url}}/users/anggia"
+method: PUT
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "name": "Anggia Putri",
+      "email": "anggia@kerjaku.com",
+      "phone": "081211112222"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', () => pm.response.to.have.status(200));
+      pm.test('Nama berubah', () => pm.expect(pm.response.json().name).to.eql('Anggia Putri'));
+    language: text/javascript
+order: 1000

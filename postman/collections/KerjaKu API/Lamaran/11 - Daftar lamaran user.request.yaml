@@ -1,0 +1,14 @@
+$kind: http-request
+url: "{{base_url}}/lamaran?username=anggia"
+method: GET
+headers:
+  Accept: application/json
+queryParams:
+  username: anggia
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', () => pm.response.to.have.status(200));
+      pm.test('Ada 1 lamaran', () => pm.expect(pm.response.json().length).to.eql(1));
+    language: text/javascript
+order: 4000

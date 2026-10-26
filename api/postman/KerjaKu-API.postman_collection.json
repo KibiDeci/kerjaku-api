@@ -1,0 +1,229 @@
+{
+  "info": {
+    "name": "KerjaKu API",
+    "description": "REST API Laravel 12 + SQLite (kerjaku.db) untuk aplikasi KerjaKu.\n\nSebelum menguji:\n1. cd myApp/api\n2. php artisan migrate:fresh --seed  (reset data)\n3. php artisan serve\n\nJalankan request sesuai urutan nomor.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000/api" }
+  ],
+  "item": [
+    {
+      "name": "Jobs",
+      "item": [
+        {
+          "name": "01 - Daftar lowongan",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/jobs", "host": ["{{base_url}}"], "path": ["jobs"] }
+          },
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "pm.test('Ada 6 lowongan', () => pm.expect(pm.response.json().length).to.eql(6));"
+          ] } }]
+        },
+        {
+          "name": "02 - Cari lowongan (search=dev)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/jobs?search=dev", "host": ["{{base_url}}"], "path": ["jobs"], "query": [{ "key": "search", "value": "dev" }] }
+          },
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "pm.test('Semua judul mengandung dev', () => pm.response.json().forEach(j => pm.expect(j.title.toLowerCase()).to.include('dev')));"
+          ] } }]
+        },
+        {
+          "name": "03 - Detail lowongan",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/jobs/1", "host": ["{{base_url}}"], "path": ["jobs", "1"] }
+          },
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "pm.test('Id = 1', () => pm.expect(pm.response.json().id).to.eql(1));"
+          ] } }]
+        },
+        {
+          "name": "04 - Detail lowongan tidak ada (404)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/jobs/99", "host": ["{{base_url}}"], "path": ["jobs", "99"] }
+          },
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 404', () => pm.response.to.have.status(404));"
+          ] } }]
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "05 - Login berhasil",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"anggia\",\n  \"password\": \"kerja123\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] }
+          },
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "pm.test('Password tidak dikirim', () => pm.expect(pm.response.json()).to.not.have.property('password'));"
+          ] } }]
+        },
+        {
+          "name": "06 - Login password salah (401)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"anggia\",\n  \"password\": \"salah\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] }
+          },
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 401', () => pm.response.to.have.status(401));"
+          ] } }]
+        },
+        {
+          "name": "07 - Login kosong (422)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] }
+          },
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 422', () => pm.response.to.have.status(422));"
+          ] } }]
+        }
+      ]
+    },
+    {
+      "name": "Lamaran",
+      "item": [
+        {
+          "name": "08 - Kirim lamaran (201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"jobId\": 1,\n  \"username\": \"anggia\",\n  \"cv\": \"https://drive.google.com/cv-anggia\",\n  \"pesan\": \"Saya tertarik dengan posisi ini\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/lamaran", "host": ["{{base_url}}"], "path": ["lamaran"] }
+          },
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 201', () => pm.response.to.have.status(201));",
+            "pm.test('jobId = 1', () => pm.expect(pm.response.json().jobId).to.eql(1));"
+          ] } }]
+        },
+        {
+          "name": "09 - Kirim lamaran dua kali (422)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"jobId\": 1,\n  \"username\": \"anggia\",\n  \"cv\": \"https://drive.google.com/cv-anggia\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/lamaran", "host": ["{{base_url}}"], "path": ["lamaran"] }
+          },
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 422', () => pm.response.to.have.status(422));"
+          ] } }]
+        },
+        {
+          "name": "10 - Kirim lamaran CV kosong (422)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"jobId\": 2,\n  \"username\": \"anggia\",\n  \"cv\": \"\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/lamaran", "host": ["{{base_url}}"], "path": ["lamaran"] }
+          },
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 422', () => pm.response.to.have.status(422));"
+          ] } }]
+        },
+        {
+          "name": "11 - Daftar lamaran user",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/lamaran?username=anggia", "host": ["{{base_url}}"], "path": ["lamaran"], "query": [{ "key": "username", "value": "anggia" }] }
+          },
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "pm.test('Ada 1 lamaran', () => pm.expect(pm.response.json().length).to.eql(1));"
+          ] } }]
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "12 - Update profil",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Anggia Putri\",\n  \"email\": \"anggia@kerjaku.com\",\n  \"phone\": \"081211112222\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/users/anggia", "host": ["{{base_url}}"], "path": ["users", "anggia"] }
+          },
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 200', () => pm.response.to.have.status(200));",
+            "pm.test('Nama berubah', () => pm.expect(pm.response.json().name).to.eql('Anggia Putri'));"
+          ] } }]
+        },
+        {
+          "name": "13 - Update profil nama kosong (422)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"\",\n  \"email\": \"anggia@kerjaku.com\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/users/anggia", "host": ["{{base_url}}"], "path": ["users", "anggia"] }
+          },
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 422', () => pm.response.to.have.status(422));"
+          ] } }]
+        },
+        {
+          "name": "14 - Update profil user tidak ada (404)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Tes\",\n  \"email\": \"tes@kerjaku.com\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/users/tidakada", "host": ["{{base_url}}"], "path": ["users", "tidakada"] }
+          },
+          "event": [{ "listen": "test", "script": { "exec": [
+            "pm.test('Status 404', () => pm.response.to.have.status(404));"
+          ] } }]
+        }
+      ]
+    }
+  ]
+}

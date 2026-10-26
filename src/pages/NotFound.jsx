@@ -1,28 +1,21 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react"
-import ExploreContainer from "../components/ExploreContainer"
-import "./Tab1.css"
-import { NavLink } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
 const NotFound = () => {
-  return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Not Found</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent fullscreen>
-        <div>Click to Enter Home</div>
-        <NavLink to="/home">Home</NavLink>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">404</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <ExploreContainer name="404" />
-      </IonContent>
-    </IonPage>
-  )
-}
+  const navigate = useNavigate();
 
-export default NotFound
+  return (
+    <div className="page">
+      <main className="page-content">
+        <div className="text-center py-5">
+          <h1 className="display-1 text-primary">404</h1>
+          <p>Halaman tidak ditemukan</p>
+          <button className="btn btn-primary" onClick={() => navigate("/", { replace: true })}>
+            Kembali ke Home
+          </button>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default NotFound;

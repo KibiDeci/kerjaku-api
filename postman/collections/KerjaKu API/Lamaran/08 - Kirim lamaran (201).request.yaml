@@ -1,0 +1,22 @@
+$kind: http-request
+url: "{{base_url}}/lamaran"
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "jobId": 1,
+      "username": "anggia",
+      "cv": "https://drive.google.com/cv-anggia",
+      "pesan": "Saya tertarik dengan posisi ini"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 201', () => pm.response.to.have.status(201));
+      pm.test('jobId = 1', () => pm.expect(pm.response.json().jobId).to.eql(1));
+    language: text/javascript
+order: 1000

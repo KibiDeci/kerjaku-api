@@ -1,4 +1,3 @@
-// src/context/TaskContext.tsx
 import { createContext, useContext, useState, useEffect, ReactNode } from "react"
 
 export interface Task {
@@ -22,13 +21,11 @@ const TaskContext = createContext<TaskContextType | undefined>(undefined)
 const STORAGE_KEY = "ionic-todo-tasks"
 
 export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Lazy initializer: baca localStorage hanya sekali saat mount
   const [tasks, setTasks] = useState<Task[]>(() => {
     const saved = localStorage.getItem(STORAGE_KEY)
     return saved ? JSON.parse(saved) : []
   })
 
-  // Sinkronkan ke localStorage setiap kali tasks berubah
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks))
   }, [tasks])
@@ -56,7 +53,6 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   return <TaskContext.Provider value={{ tasks, addTask, toggleTask, deleteTask, clearCompleted, clearAll }}>{children}</TaskContext.Provider>
 }
 
-// Custom hook agar pemakaian di komponen lebih ringkas & aman
 export const useTasks = () => {
   const ctx = useContext(TaskContext)
   if (!ctx) throw new Error("useTasks harus dipakai di dalam TaskProvider")

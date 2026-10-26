@@ -1,0 +1,12 @@
+$kind: collection
+description: |-
+  REST API Laravel 12 + SQLite (kerjaku.db) untuk aplikasi KerjaKu.
+
+  Sebelum menguji:
+  1. cd myApp/api
+  2. php artisan migrate:fresh --seed  (reset data)
+  3. php artisan serve
+
+  Jalankan request sesuai urutan nomor.
+variables:
+  base_url: http://localhost:8000/api

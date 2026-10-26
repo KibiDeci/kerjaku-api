@@ -10,6 +10,15 @@ export default defineConfig({
     react(),
     legacy()
   ],
+  server: {
+    proxy: {
+      '/wilayah': {
+        target: 'https://wilayah.id',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/wilayah/, ''),
+      },
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',

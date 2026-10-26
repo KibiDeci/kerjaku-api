@@ -1,0 +1,19 @@
+$kind: http-request
+url: "{{base_url}}/lamaran"
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "jobId": 2,
+      "username": "anggia",
+      "cv": ""
+    }
+scripts:
+  - type: afterResponse
+    code: pm.test('Status 422', () => pm.response.to.have.status(422));
+    language: text/javascript
+order: 3000

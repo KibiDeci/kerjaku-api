@@ -1,0 +1,11 @@
+# Use this workspace to collaborate
+workspace:
+  id: bd0dcab5-fc34-430c-b512-9b2d9c961f59
+
+localResources:
+  collections:
+    - ../api/postman/KerjaKu-API.postman_collection.json
+
+cloudResources:
+  collections:
+    ../postman/collections/KerjaKu API: d8e26386-f807-4660-b7f1-a3308ffe7ad5

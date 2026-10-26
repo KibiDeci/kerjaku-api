@@ -1,63 +1,28 @@
-import { Navigate, Route } from 'react-router-dom';
-import {
-  IonApp,
-  IonIcon,
-  IonLabel,
-  IonRouterOutlet,
-  IonTabBar,
-  IonTabButton,
-  IonTabs,
-  setupIonicReact
-} from '@ionic/react';
-import { IonReactRouter } from '@ionic/react-router';
-import { ellipse, square, triangle } from 'ionicons/icons';
-import Tab1 from './pages/Tab1';
-import Home from "./pages/Home";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Detail from "./pages/Detail";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+import { getUser } from "./data/auth";
 
-/* Core CSS required for Ionic components to work properly */
-import '@ionic/react/css/core.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./theme/style.css";
 
-/* Basic CSS for apps built with Ionic */
-import '@ionic/react/css/normalize.css';
-import '@ionic/react/css/structure.css';
-import '@ionic/react/css/typography.css';
-
-/* Optional CSS utils that can be commented out */
-import '@ionic/react/css/padding.css';
-import '@ionic/react/css/float-elements.css';
-import '@ionic/react/css/text-alignment.css';
-import '@ionic/react/css/text-transformation.css';
-import '@ionic/react/css/flex-utils.css';
-import '@ionic/react/css/display.css';
-import { TaskProvider } from "./context/TaskContext"
-
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
-
-/* import '@ionic/react/css/palettes/dark.always.css'; */
-/* import '@ionic/react/css/palettes/dark.class.css'; */
-import '@ionic/react/css/palettes/dark.system.css';
-
-/* Theme variables */
-import './theme/variables.css';
-
-setupIonicReact();
+// Halaman yang wajib login
+const RequireLogin = ({ children }) => (getUser() ? children : <Navigate to="/login" replace />);
 
 const App = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route path="/home" element={<Home />} />
-        <Route path="/tab1" element={<Tab1 />} />
-        <Route path="*" element={<NotFound />} />
-      </IonRouterOutlet>
-    </IonReactRouter>
-  </IonApp>
-)
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/dashboard" element={<RequireLogin><Dashboard /></RequireLogin>} />
+      <Route path="/detail/:id" element={<RequireLogin><Detail /></RequireLogin>} />
+      <Route path="/profile" element={<RequireLogin><Profile /></RequireLogin>} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  </BrowserRouter>
+);
 
 export default App;
