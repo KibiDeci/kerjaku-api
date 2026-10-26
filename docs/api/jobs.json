@@ -1,0 +1,50 @@
+{
+    "data": [
+        {
+            "id": 1,
+            "title": "Frontend Developer",
+            "company": "PT Teknologi Nusantara",
+            "location": "Jakarta",
+            "salary": "Rp8.000.000"
+        },
+        {
+            "id": 2,
+            "title": "Mobile Developer",
+            "company": "Aplikasi Kita",
+            "location": "Bandung",
+            "salary": "Rp7.000.000"
+        },
+        {
+            "id": 3,
+            "title": "UI/UX Designer",
+            "company": "Kreatif Digital",
+            "location": "Yogyakarta",
+            "salary": "Rp6.000.000"
+        },
+        {
+            "id": 4,
+            "title": "Digital Marketing",
+            "company": "Toko Maju",
+            "location": "Surabaya",
+            "salary": "Rp5.500.000"
+        },
+        {
+            "id": 5,
+            "title": "Staff Admin",
+            "company": "PT Sinar Abadi",
+            "location": "Bekasi",
+            "salary": "Rp4.500.000"
+        },
+        {
+            "id": 6,
+            "title": "Data Analyst",
+            "company": "Analitika Data",
+            "location": "Jakarta",
+            "salary": "Rp9.000.000"
+        }
+    ],
+    "meta": {
+        "resource": "jobs",
+        "updated_at": "2026-10-26"
+    }
+}

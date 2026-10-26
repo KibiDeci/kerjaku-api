@@ -1,0 +1,14 @@
+{
+    "data": {
+        "id": 3,
+        "title": "UI/UX Designer",
+        "company": "Kreatif Digital",
+        "location": "Yogyakarta",
+        "salary": "Rp6.000.000",
+        "description": "Mendesain tampilan aplikasi menggunakan Figma."
+    },
+    "meta": {
+        "resource": "job",
+        "updated_at": "2026-10-26"
+    }
+}

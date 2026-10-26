@@ -1,0 +1,33 @@
+{
+    "data": [
+        {
+            "code": "jakarta",
+            "name": "Jakarta",
+            "total_jobs": 2
+        },
+        {
+            "code": "bandung",
+            "name": "Bandung",
+            "total_jobs": 1
+        },
+        {
+            "code": "yogyakarta",
+            "name": "Yogyakarta",
+            "total_jobs": 1
+        },
+        {
+            "code": "surabaya",
+            "name": "Surabaya",
+            "total_jobs": 1
+        },
+        {
+            "code": "bekasi",
+            "name": "Bekasi",
+            "total_jobs": 1
+        }
+    ],
+    "meta": {
+        "resource": "locations",
+        "updated_at": "2026-10-26"
+    }
+}

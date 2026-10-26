@@ -1,0 +1,14 @@
+{
+    "data": {
+        "id": 4,
+        "title": "Digital Marketing",
+        "company": "Toko Maju",
+        "location": "Surabaya",
+        "salary": "Rp5.500.000",
+        "description": "Mengelola iklan dan media sosial perusahaan."
+    },
+    "meta": {
+        "resource": "job",
+        "updated_at": "2026-10-26"
+    }
+}
