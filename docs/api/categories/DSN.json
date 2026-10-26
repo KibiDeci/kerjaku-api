@@ -1,0 +1,17 @@
+{
+  "data": [
+    {
+      "id": 3,
+      "title": "UI/UX Designer",
+      "company": "Kreatif Digital",
+      "category": "DSN",
+      "location": "Yogyakarta",
+      "type": "Kontrak",
+      "salary": "Rp6.000.000"
+    }
+  ],
+  "meta": {
+    "resource": "jobs_by_category",
+    "updated_at": "2026-10-26"
+  }
+}

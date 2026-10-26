@@ -1,0 +1,85 @@
+{
+  "updated_at": "2026-10-26",
+  "categories": [
+    { "code": "IT", "name": "Teknologi Informasi" },
+    { "code": "DSN", "name": "Desain" },
+    { "code": "MKT", "name": "Pemasaran" },
+    { "code": "ADM", "name": "Administrasi" }
+  ],
+  "companies": [
+    { "id": 1, "name": "PT Teknologi Nusantara", "city": "Jakarta", "website": "https://teknologinusantara.example.com" },
+    { "id": 2, "name": "Aplikasi Kita", "city": "Bandung", "website": "https://aplikasikita.example.com" },
+    { "id": 3, "name": "Kreatif Digital", "city": "Yogyakarta", "website": "https://kreatifdigital.example.com" },
+    { "id": 4, "name": "Toko Maju", "city": "Surabaya", "website": "https://tokomaju.example.com" },
+    { "id": 5, "name": "PT Sinar Abadi", "city": "Bekasi", "website": "https://sinarabadi.example.com" },
+    { "id": 6, "name": "Analitika Data", "city": "Jakarta", "website": "https://analitikadata.example.com" }
+  ],
+  "jobs": [
+    {
+      "id": 1,
+      "title": "Frontend Developer",
+      "company_id": 1,
+      "category": "IT",
+      "location": "Jakarta",
+      "type": "Full-time",
+      "salary": "Rp8.000.000",
+      "description": "Membuat tampilan website menggunakan React.",
+      "requirements": ["Menguasai HTML, CSS, JavaScript", "Berpengalaman dengan React", "Paham Git"]
+    },
+    {
+      "id": 2,
+      "title": "Mobile Developer",
+      "company_id": 2,
+      "category": "IT",
+      "location": "Bandung",
+      "type": "Full-time",
+      "salary": "Rp7.000.000",
+      "description": "Membuat aplikasi Android dan iOS menggunakan Ionic.",
+      "requirements": ["Menguasai Ionic atau React Native", "Paham REST API", "Bisa build aplikasi Android"]
+    },
+    {
+      "id": 3,
+      "title": "UI/UX Designer",
+      "company_id": 3,
+      "category": "DSN",
+      "location": "Yogyakarta",
+      "type": "Kontrak",
+      "salary": "Rp6.000.000",
+      "description": "Mendesain tampilan aplikasi menggunakan Figma.",
+      "requirements": ["Menguasai Figma", "Memiliki portofolio desain", "Paham prinsip UX"]
+    },
+    {
+      "id": 4,
+      "title": "Digital Marketing",
+      "company_id": 4,
+      "category": "MKT",
+      "location": "Surabaya",
+      "type": "Full-time",
+      "salary": "Rp5.500.000",
+      "description": "Mengelola iklan dan media sosial perusahaan.",
+      "requirements": ["Paham Meta Ads dan Google Ads", "Kreatif membuat konten", "Bisa membaca data iklan"]
+    },
+    {
+      "id": 5,
+      "title": "Staff Admin",
+      "company_id": 5,
+      "category": "ADM",
+      "location": "Bekasi",
+      "type": "Full-time",
+      "salary": "Rp4.500.000",
+      "description": "Mengelola surat dan arsip kantor.",
+      "requirements": ["Menguasai Microsoft Office", "Teliti dan rapi", "Minimal lulusan SMA/SMK"]
+    },
+    {
+      "id": 6,
+      "title": "Data Analyst",
+      "company_id": 6,
+      "category": "IT",
+      "location": "Jakarta",
+      "type": "Magang",
+      "salary": "Rp9.000.000",
+      "description": "Mengolah data dan membuat laporan untuk tim bisnis.",
+      "requirements": ["Menguasai SQL dan Excel", "Bisa Python atau R", "Bisa membuat visualisasi data"]
+    }
+  ]
+}

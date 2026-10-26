@@ -1,0 +1,23 @@
+{
+  "data": {
+    "id": 2,
+    "name": "Aplikasi Kita",
+    "city": "Bandung",
+    "website": "https://aplikasikita.example.com",
+    "jobs": [
+      {
+        "id": 2,
+        "title": "Mobile Developer",
+        "company": "Aplikasi Kita",
+        "category": "IT",
+        "location": "Bandung",
+        "type": "Full-time",
+        "salary": "Rp7.000.000"
+      }
+    ]
+  },
+  "meta": {
+    "resource": "company",
+    "updated_at": "2026-10-26"
+  }
+}

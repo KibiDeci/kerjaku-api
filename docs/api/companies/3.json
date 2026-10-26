@@ -1,0 +1,23 @@
+{
+  "data": {
+    "id": 3,
+    "name": "Kreatif Digital",
+    "city": "Yogyakarta",
+    "website": "https://kreatifdigital.example.com",
+    "jobs": [
+      {
+        "id": 3,
+        "title": "UI/UX Designer",
+        "company": "Kreatif Digital",
+        "category": "DSN",
+        "location": "Yogyakarta",
+        "type": "Kontrak",
+        "salary": "Rp6.000.000"
+      }
+    ]
+  },
+  "meta": {
+    "resource": "company",
+    "updated_at": "2026-10-26"
+  }
+}

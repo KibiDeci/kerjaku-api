@@ -1,0 +1,44 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "PT Teknologi Nusantara",
+      "city": "Jakarta",
+      "website": "https://teknologinusantara.example.com"
+    },
+    {
+      "id": 2,
+      "name": "Aplikasi Kita",
+      "city": "Bandung",
+      "website": "https://aplikasikita.example.com"
+    },
+    {
+      "id": 3,
+      "name": "Kreatif Digital",
+      "city": "Yogyakarta",
+      "website": "https://kreatifdigital.example.com"
+    },
+    {
+      "id": 4,
+      "name": "Toko Maju",
+      "city": "Surabaya",
+      "website": "https://tokomaju.example.com"
+    },
+    {
+      "id": 5,
+      "name": "PT Sinar Abadi",
+      "city": "Bekasi",
+      "website": "https://sinarabadi.example.com"
+    },
+    {
+      "id": 6,
+      "name": "Analitika Data",
+      "city": "Jakarta",
+      "website": "https://analitikadata.example.com"
+    }
+  ],
+  "meta": {
+    "resource": "companies",
+    "updated_at": "2026-10-26"
+  }
+}

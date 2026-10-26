@@ -1,0 +1,23 @@
+{
+  "data": {
+    "id": 4,
+    "name": "Toko Maju",
+    "city": "Surabaya",
+    "website": "https://tokomaju.example.com",
+    "jobs": [
+      {
+        "id": 4,
+        "title": "Digital Marketing",
+        "company": "Toko Maju",
+        "category": "MKT",
+        "location": "Surabaya",
+        "type": "Full-time",
+        "salary": "Rp5.500.000"
+      }
+    ]
+  },
+  "meta": {
+    "resource": "company",
+    "updated_at": "2026-10-26"
+  }
+}

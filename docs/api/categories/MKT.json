@@ -1,0 +1,17 @@
+{
+  "data": [
+    {
+      "id": 4,
+      "title": "Digital Marketing",
+      "company": "Toko Maju",
+      "category": "MKT",
+      "location": "Surabaya",
+      "type": "Full-time",
+      "salary": "Rp5.500.000"
+    }
+  ],
+  "meta": {
+    "resource": "jobs_by_category",
+    "updated_at": "2026-10-26"
+  }
+}

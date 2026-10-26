@@ -1,0 +1,22 @@
+{
+  "data": {
+    "id": 6,
+    "title": "Data Analyst",
+    "company_id": 6,
+    "category": "IT",
+    "location": "Jakarta",
+    "type": "Magang",
+    "salary": "Rp9.000.000",
+    "description": "Mengolah data dan membuat laporan untuk tim bisnis.",
+    "requirements": [
+      "Menguasai SQL dan Excel",
+      "Bisa Python atau R",
+      "Bisa membuat visualisasi data"
+    ],
+    "company": "Analitika Data"
+  },
+  "meta": {
+    "resource": "job",
+    "updated_at": "2026-10-26"
+  }
+}

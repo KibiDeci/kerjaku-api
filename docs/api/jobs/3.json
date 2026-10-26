@@ -1,0 +1,22 @@
+{
+  "data": {
+    "id": 3,
+    "title": "UI/UX Designer",
+    "company_id": 3,
+    "category": "DSN",
+    "location": "Yogyakarta",
+    "type": "Kontrak",
+    "salary": "Rp6.000.000",
+    "description": "Mendesain tampilan aplikasi menggunakan Figma.",
+    "requirements": [
+      "Menguasai Figma",
+      "Memiliki portofolio desain",
+      "Paham prinsip UX"
+    ],
+    "company": "Kreatif Digital"
+  },
+  "meta": {
+    "resource": "job",
+    "updated_at": "2026-10-26"
+  }
+}

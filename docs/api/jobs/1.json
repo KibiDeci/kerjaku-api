@@ -1,0 +1,22 @@
+{
+  "data": {
+    "id": 1,
+    "title": "Frontend Developer",
+    "company_id": 1,
+    "category": "IT",
+    "location": "Jakarta",
+    "type": "Full-time",
+    "salary": "Rp8.000.000",
+    "description": "Membuat tampilan website menggunakan React.",
+    "requirements": [
+      "Menguasai HTML, CSS, JavaScript",
+      "Berpengalaman dengan React",
+      "Paham Git"
+    ],
+    "company": "PT Teknologi Nusantara"
+  },
+  "meta": {
+    "resource": "job",
+    "updated_at": "2026-10-26"
+  }
+}

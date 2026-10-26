@@ -30,6 +30,21 @@ Base URL: `http://127.0.0.1:8000/api`
 
 Akun test: `anggia` / `kerja123` dan `admin` / `admin123`.
 
+## API Statis (seperti wilayah.id)
+
+Data lowongan juga tersedia sebagai file JSON statis di folder `docs/`, di-hosting gratis lewat GitHub Pages.
+
+| Endpoint | Isi |
+|---|---|
+| `/api/jobs.json` | Semua lowongan |
+| `/api/jobs/[ID].json` | Detail lowongan |
+| `/api/categories.json` | Daftar kategori |
+| `/api/categories/[CODE].json` | Lowongan per kategori (`IT`, `DSN`, `MKT`, `ADM`) |
+| `/api/companies.json` | Daftar perusahaan |
+| `/api/companies/[ID].json` | Detail perusahaan + lowongannya |
+
+Ubah data di `static-api/data.json`, lalu jalankan `npm run build:api` untuk membuat ulang file di `docs/api/`.
+
 ## Cara Menjalankan
 
 **1. Backend (API Laravel)** — butuh PHP 8.2 dan Composer

@@ -1,0 +1,22 @@
+{
+  "data": {
+    "id": 2,
+    "title": "Mobile Developer",
+    "company_id": 2,
+    "category": "IT",
+    "location": "Bandung",
+    "type": "Full-time",
+    "salary": "Rp7.000.000",
+    "description": "Membuat aplikasi Android dan iOS menggunakan Ionic.",
+    "requirements": [
+      "Menguasai Ionic atau React Native",
+      "Paham REST API",
+      "Bisa build aplikasi Android"
+    ],
+    "company": "Aplikasi Kita"
+  },
+  "meta": {
+    "resource": "job",
+    "updated_at": "2026-10-26"
+  }
+}
