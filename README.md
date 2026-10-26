@@ -32,18 +32,21 @@ Akun test: `anggia` / `kerja123` dan `admin` / `admin123`.
 
 ## API Statis (seperti wilayah.id)
 
-Data lowongan juga tersedia sebagai file JSON statis di folder `docs/`, di-hosting gratis lewat GitHub Pages.
+Data lowongan dari database SQLite juga diekspor menjadi file JSON statis di folder `docs/`, di-hosting gratis lewat GitHub Pages.
 
 | Endpoint | Isi |
 |---|---|
 | `/api/jobs.json` | Semua lowongan |
 | `/api/jobs/[ID].json` | Detail lowongan |
-| `/api/categories.json` | Daftar kategori |
-| `/api/categories/[CODE].json` | Lowongan per kategori (`IT`, `DSN`, `MKT`, `ADM`) |
-| `/api/companies.json` | Daftar perusahaan |
-| `/api/companies/[ID].json` | Detail perusahaan + lowongannya |
+| `/api/locations.json` | Daftar lokasi |
+| `/api/locations/[CODE].json` | Lowongan per lokasi (mis. `jakarta`) |
 
-Ubah data di `static-api/data.json`, lalu jalankan `npm run build:api` untuk membuat ulang file di `docs/api/`.
+Setelah data di database berubah, buat ulang file JSON:
+
+```bash
+cd api
+php artisan api:static
+```
 
 ## Cara Menjalankan
 

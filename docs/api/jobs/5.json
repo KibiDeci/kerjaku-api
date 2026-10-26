@@ -1,22 +1,14 @@
 {
-  "data": {
-    "id": 5,
-    "title": "Staff Admin",
-    "company_id": 5,
-    "category": "ADM",
-    "location": "Bekasi",
-    "type": "Full-time",
-    "salary": "Rp4.500.000",
-    "description": "Mengelola surat dan arsip kantor.",
-    "requirements": [
-      "Menguasai Microsoft Office",
-      "Teliti dan rapi",
-      "Minimal lulusan SMA/SMK"
-    ],
-    "company": "PT Sinar Abadi"
-  },
-  "meta": {
-    "resource": "job",
-    "updated_at": "2026-10-26"
-  }
+    "data": {
+        "id": 5,
+        "title": "Staff Admin",
+        "company": "PT Sinar Abadi",
+        "location": "Bekasi",
+        "salary": "Rp4.500.000",
+        "description": "Mengelola surat dan arsip kantor."
+    },
+    "meta": {
+        "resource": "job",
+        "updated_at": "2026-10-26"
+    }
 }

@@ -1,0 +1,15 @@
+{
+    "data": [
+        {
+            "id": 2,
+            "title": "Mobile Developer",
+            "company": "Aplikasi Kita",
+            "location": "Bandung",
+            "salary": "Rp7.000.000"
+        }
+    ],
+    "meta": {
+        "resource": "jobs_by_location",
+        "updated_at": "2026-10-26"
+    }
+}

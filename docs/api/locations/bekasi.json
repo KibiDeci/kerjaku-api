@@ -1,0 +1,15 @@
+{
+    "data": [
+        {
+            "id": 5,
+            "title": "Staff Admin",
+            "company": "PT Sinar Abadi",
+            "location": "Bekasi",
+            "salary": "Rp4.500.000"
+        }
+    ],
+    "meta": {
+        "resource": "jobs_by_location",
+        "updated_at": "2026-10-26"
+    }
+}

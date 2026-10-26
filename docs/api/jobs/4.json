@@ -1,22 +1,14 @@
 {
-  "data": {
-    "id": 4,
-    "title": "Digital Marketing",
-    "company_id": 4,
-    "category": "MKT",
-    "location": "Surabaya",
-    "type": "Full-time",
-    "salary": "Rp5.500.000",
-    "description": "Mengelola iklan dan media sosial perusahaan.",
-    "requirements": [
-      "Paham Meta Ads dan Google Ads",
-      "Kreatif membuat konten",
-      "Bisa membaca data iklan"
-    ],
-    "company": "Toko Maju"
-  },
-  "meta": {
-    "resource": "job",
-    "updated_at": "2026-10-26"
-  }
+    "data": {
+        "id": 4,
+        "title": "Digital Marketing",
+        "company": "Toko Maju",
+        "location": "Surabaya",
+        "salary": "Rp5.500.000",
+        "description": "Mengelola iklan dan media sosial perusahaan."
+    },
+    "meta": {
+        "resource": "job",
+        "updated_at": "2026-10-26"
+    }
 }
