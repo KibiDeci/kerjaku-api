@@ -1,7 +1,7 @@
-// Membuat API statis (file JSON) dari data/db.json ke folder docs/api untuk GitHub Pages
+// Membuat API statis (file JSON) dari database SQLite ke folder docs/api untuk GitHub Pages
 const fs = require("fs");
 const path = require("path");
-const { baca } = require("./db");
+const db = require("./db");
 
 const OUT = path.join(__dirname, "..", "docs", "api");
 const updatedAt = new Date().toISOString().slice(0, 10);
@@ -16,28 +16,32 @@ const tulis = (file, data, resource) => {
   console.log("dibuat: docs/api/" + file);
 };
 
-fs.rmSync(OUT, { recursive: true, force: true });
+// serialize: tunggu tabel dan data awal di db.js selesai dibuat dulu
+db.serialize(() => db.all("SELECT * FROM lowongan ORDER BY id", (err, jobs) => {
+  if (err) throw err;
 
-const jobs = baca().lowongan;
+  fs.rmSync(OUT, { recursive: true, force: true });
 
-// 1. Semua lowongan
-tulis("jobs.json", jobs.map(ringkas), "jobs");
+  // 1. Semua lowongan
+  tulis("jobs.json", jobs.map(ringkas), "jobs");
 
-// 2. Detail lowongan
-jobs.forEach((job) => tulis(`jobs/${job.id}.json`, job, "job"));
+  // 2. Detail lowongan
+  jobs.forEach((job) => tulis(`jobs/${job.id}.json`, job, "job"));
 
-// 3. Daftar lokasi dan lowongan per lokasi
-const perLokasi = {};
-jobs.forEach((job) => (perLokasi[job.location] ||= []).push(job));
+  // 3. Daftar lokasi dan lowongan per lokasi
+  const perLokasi = {};
+  jobs.forEach((job) => (perLokasi[job.location] ||= []).push(job));
 
-tulis(
-  "locations.json",
-  Object.keys(perLokasi).map((nama) => ({ code: slug(nama), name: nama, total_jobs: perLokasi[nama].length })),
-  "locations"
-);
+  tulis(
+    "locations.json",
+    Object.keys(perLokasi).map((nama) => ({ code: slug(nama), name: nama, total_jobs: perLokasi[nama].length })),
+    "locations"
+  );
 
-Object.entries(perLokasi).forEach(([nama, list]) => {
-  tulis(`locations/${slug(nama)}.json`, list.map(ringkas), "jobs_by_location");
-});
+  Object.entries(perLokasi).forEach(([nama, list]) => {
+    tulis(`locations/${slug(nama)}.json`, list.map(ringkas), "jobs_by_location");
+  });
 
-console.log("Selesai. Total lowongan: " + jobs.length);
+  console.log("Selesai. Total lowongan: " + jobs.length);
+  db.close();
+}));

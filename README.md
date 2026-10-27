@@ -7,7 +7,7 @@ Terdiri dari dua bagian:
 | Folder | Isi |
 |---|---|
 | `docs/` | **API statis** (file JSON) seperti wilayah.id, di-hosting di GitHub Pages |
-| `api/` | **REST API Node.js + Express** (login, lowongan, lamaran, profil), data di file JSON |
+| `api/` | **REST API Node.js + Express + SQLite** (login, lowongan, lamaran, profil) |
 
 ## 1. API Statis (GitHub Pages)
 
@@ -36,14 +36,14 @@ Contoh response `GET /api/jobs/1.json`:
 }
 ```
 
-File JSON dibuat dari `api/data/db.json` dengan perintah:
+File JSON dibuat dari database SQLite (`api/data/kerjaku.db`) dengan perintah:
 
 ```bash
 cd api
 npm run static
 ```
 
-## 2. REST API Node.js (Express)
+## 2. REST API Node.js (Express + SQLite)
 
 Base URL lokal: `http://127.0.0.1:8000/api`
 
@@ -68,6 +68,6 @@ npm install
 npm run dev
 ```
 
-Data tersimpan di `api/data/db.json`. Kembalikan ke data awal dengan `git checkout api/data/db.json`.
+Database SQLite ada di `api/data/kerjaku.db` (library `sqlite3`). File ini dibuat dan diisi data awal otomatis saat server pertama kali jalan, dan tidak ikut di-commit. Kembalikan ke data awal dengan `npm run reset`, lalu jalankan server lagi.
 
 Koleksi Postman: `api/postman/KerjaKu-API.postman_collection.json`.

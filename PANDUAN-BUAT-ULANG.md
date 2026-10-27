@@ -1,12 +1,12 @@
 # Panduan Membuat Ulang Project KerjaKu (Step by Step)
 
-Panduan ini untuk membuat ulang project **KerjaKu** dari nol: aplikasi lowongan kerja dengan frontend **Ionic React** dan backend **REST API Node.js (Express)** dengan data disimpan di file JSON.
+Panduan ini untuk membuat ulang project **KerjaKu** dari nol: aplikasi lowongan kerja dengan frontend **Ionic React** dan backend **REST API Node.js (Express)** dengan database **SQLite**.
 
 ## Daftar Isi
 
 0. [Gambaran Project](#0-gambaran-project)
 1. [Persiapan Software](#1-persiapan-software)
-2. [Backend: Node.js + Express API](#2-backend-nodejs--express-api)
+2. [Backend: Node.js + Express + SQLite](#2-backend-nodejs--express--sqlite)
 3. [Frontend: React + Axios](#3-frontend-react--axios)
 4. [Menjalankan Project](#4-menjalankan-project)
 5. [Testing API](#5-testing-api)
@@ -27,7 +27,7 @@ Panduan ini untuk membuat ulang project **KerjaKu** dari nol: aplikasi lowongan 
 | HTTP client | Axios |
 | Mobile | Capacitor 8 |
 | Backend | Node.js + Express 5 |
-| Database | File JSON (`api/data/db.json`) |
+| Database | SQLite, library `sqlite3` (file `api/data/kerjaku.db`) |
 
 ### Struktur folder akhir
 
@@ -35,8 +35,8 @@ Panduan ini untuk membuat ulang project **KerjaKu** dari nol: aplikasi lowongan 
 myApp/
 ├── api/                          ← BACKEND (Node.js + Express)
 │   ├── data/
-│   │   └── db.json               ← "database" (users, lowongan, lamaran)
-│   ├── db.js                     ← fungsi baca/simpan db.json
+│   │   └── kerjaku.db            ← file database SQLite (dibuat otomatis)
+│   ├── db.js                     ← buka database, buat tabel, isi data awal
 │   ├── server.js                 ← semua endpoint API
 │   ├── build-static.js           ← membuat API statis ke docs/api
 │   └── package.json
@@ -71,9 +71,19 @@ Halaman React (src/pages)
   memanggil fungsi di src/data/*.js
   yang mengirim request lewat Axios ke http://127.0.0.1:8000/api/...
   lalu Express mencocokkan URL dengan app.get / app.post / app.put di server.js
-  yang membaca dan menyimpan data di api/data/db.json.
+  yang menjalankan query SQL ke database SQLite (api/data/kerjaku.db).
 Hasilnya dikirim balik ke halaman dalam format JSON.
 ```
+
+### Tabel database
+
+| Tabel | Kolom |
+|---|---|
+| `users` | `id`, `username` (unik), `name`, `email` (unik), `phone`, `password` |
+| `lowongan` | `id`, `title`, `company`, `location`, `salary`, `description` |
+| `lamaran` | `id`, `lowongan_id`, `user_id`, `cv`, `pesan`, `tanggal` |
+
+Relasi: satu user bisa punya banyak lamaran, satu lowongan bisa punya banyak lamaran. Kombinasi `lowongan_id` + `user_id` unik, jadi satu user tidak bisa melamar lowongan yang sama dua kali.
 
 ### Daftar endpoint
 
@@ -98,16 +108,17 @@ Install semua ini dulu:
 | [Git](https://git-scm.com) | Version control | `git --version` |
 | VS Code | Editor | |
 
-Tidak perlu PHP, Composer, XAMPP, atau database server.
+Tidak perlu PHP, Composer, XAMPP, atau server database. SQLite cukup berupa satu file.
 
 ### Extension VS Code yang disarankan
 
+- **SQLite Viewer**: untuk melihat isi `kerjaku.db`
 - **Thunder Client**: untuk testing API
 - **ES7+ React snippets** (opsional)
 
 ---
 
-## 2. Backend: Node.js + Express API
+## 2. Backend: Node.js + Express + SQLite
 
 Semua perintah di bagian ini dijalankan di terminal (PowerShell).
 
@@ -118,61 +129,121 @@ cd myApp
 mkdir api
 cd api
 npm init -y
-npm install express cors
+npm install express cors sqlite3
 mkdir data
 ```
 
 - `express`: framework untuk membuat server dan endpoint API.
 - `cors`: mengizinkan frontend (port 5173) memanggil API (port 8000).
+- `sqlite3`: library untuk membaca dan menulis database SQLite.
 
-### 2.2 Data awal: `api/data/db.json`
+Kalau npm menampilkan peringatan `install scripts blocked` untuk `sqlite3`, jalankan:
 
-File ini berperan sebagai database. Isinya 3 "tabel": `users`, `lowongan`, dan `lamaran`.
-
-```json
-{
-  "users": [
-    { "id": 1, "username": "admin", "name": "Admin", "email": "admin@kerjaku.com", "phone": "081234567890", "password": "admin123" },
-    { "id": 2, "username": "anggia", "name": "Anggia", "email": "anggia@kerjaku.com", "phone": "081298765432", "password": "kerja123" }
-  ],
-  "lowongan": [
-    { "id": 1, "title": "Frontend Developer", "company": "PT Teknologi Nusantara", "location": "Jakarta", "salary": "Rp8.000.000", "description": "Membuat tampilan website menggunakan React." },
-    { "id": 2, "title": "Mobile Developer", "company": "Aplikasi Kita", "location": "Bandung", "salary": "Rp7.000.000", "description": "Membuat aplikasi Android dan iOS menggunakan Ionic." },
-    { "id": 3, "title": "UI/UX Designer", "company": "Kreatif Digital", "location": "Yogyakarta", "salary": "Rp6.000.000", "description": "Mendesain tampilan aplikasi menggunakan Figma." },
-    { "id": 4, "title": "Digital Marketing", "company": "Toko Maju", "location": "Surabaya", "salary": "Rp5.500.000", "description": "Mengelola iklan dan media sosial perusahaan." },
-    { "id": 5, "title": "Staff Admin", "company": "PT Sinar Abadi", "location": "Bekasi", "salary": "Rp4.500.000", "description": "Mengelola surat dan arsip kantor." },
-    { "id": 6, "title": "Data Analyst", "company": "Analitika Data", "location": "Jakarta", "salary": "Rp9.000.000", "description": "Mengolah data dan membuat laporan untuk tim bisnis." }
-  ],
-  "lamaran": []
-}
+```powershell
+npm install-scripts approve sqlite3
+npm rebuild sqlite3
 ```
 
-### 2.3 Fungsi baca/simpan: `api/db.js`
+`sqlite3` butuh script install untuk mengunduh file binary SQLite. Tanpa itu, muncul error `Could not locate the bindings file`.
+
+### 2.2 Database: `api/db.js`
+
+File ini membuka database, membuat 3 tabel kalau belum ada, lalu mengisi data awal saat file database baru dibuat.
 
 ```js
+const sqlite3 = require("sqlite3");
 const fs = require("fs");
 const path = require("path");
 
-const FILE = path.join(__dirname, "data", "db.json");
+// File database SQLite. Dibuat otomatis kalau belum ada.
+const FILE = path.join(__dirname, "data", "kerjaku.db");
+const fileBaru = !fs.existsSync(FILE);
+const db = new sqlite3.Database(FILE);
 
-// Baca seluruh data dari file JSON
-const baca = () => JSON.parse(fs.readFileSync(FILE, "utf8"));
+const usersAwal = [
+  ["admin", "Admin", "admin@kerjaku.com", "081234567890", "admin123"],
+  ["anggia", "Anggia", "anggia@kerjaku.com", "081298765432", "kerja123"],
+];
 
-// Simpan seluruh data ke file JSON
-const simpan = (db) => fs.writeFileSync(FILE, JSON.stringify(db, null, 2) + "\n");
+const lowonganAwal = [
+  ["Frontend Developer", "PT Teknologi Nusantara", "Jakarta", "Rp8.000.000", "Membuat tampilan website menggunakan React."],
+  ["Mobile Developer", "Aplikasi Kita", "Bandung", "Rp7.000.000", "Membuat aplikasi Android dan iOS menggunakan Ionic."],
+  ["UI/UX Designer", "Kreatif Digital", "Yogyakarta", "Rp6.000.000", "Mendesain tampilan aplikasi menggunakan Figma."],
+  ["Digital Marketing", "Toko Maju", "Surabaya", "Rp5.500.000", "Mengelola iklan dan media sosial perusahaan."],
+  ["Staff Admin", "PT Sinar Abadi", "Bekasi", "Rp4.500.000", "Mengelola surat dan arsip kantor."],
+  ["Data Analyst", "Analitika Data", "Jakarta", "Rp9.000.000", "Mengolah data dan membuat laporan untuk tim bisnis."],
+];
 
-// Ambil id berikutnya untuk sebuah tabel
-const idBaru = (list) => (list.length ? Math.max(...list.map((x) => x.id)) + 1 : 1);
+// serialize: perintah di dalamnya dijalankan berurutan
+db.serialize(() => {
+  db.run("PRAGMA foreign_keys = ON");
 
-module.exports = { baca, simpan, idBaru };
+  db.run(`CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL UNIQUE,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    phone TEXT,
+    password TEXT NOT NULL
+  )`);
+
+  db.run(`CREATE TABLE IF NOT EXISTS lowongan (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    company TEXT NOT NULL,
+    location TEXT,
+    salary TEXT,
+    description TEXT
+  )`);
+
+  db.run(`CREATE TABLE IF NOT EXISTS lamaran (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    lowongan_id INTEGER NOT NULL REFERENCES lowongan(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    cv TEXT NOT NULL,
+    pesan TEXT DEFAULT '',
+    tanggal TEXT DEFAULT (datetime('now', 'localtime')),
+    UNIQUE (lowongan_id, user_id)
+  )`);
+
+  // Isi data awal hanya saat file database baru dibuat
+  if (fileBaru) {
+    usersAwal.forEach((u) =>
+      db.run("INSERT INTO users (username, name, email, phone, password) VALUES (?, ?, ?, ?, ?)", u)
+    );
+    lowonganAwal.forEach((l) =>
+      db.run("INSERT INTO lowongan (title, company, location, salary, description) VALUES (?, ?, ?, ?, ?)", l)
+    );
+    console.log("Database baru dibuat dan diisi data awal: " + FILE);
+  }
+});
+
+module.exports = db;
 ```
+
+Hal penting:
+- **Path absolut** (`path.join(__dirname, ...)`) memastikan database selalu di `api/data/kerjaku.db`, dari folder mana pun server dijalankan. Kalau memakai path biasa seperti `"kerjaku.db"`, SQLite bisa diam-diam membuat file kosong baru di folder lain.
+- **`db.serialize`** membuat perintah di dalamnya jalan berurutan: tabel dibuat dulu, baru data diisi.
+- **`?`** di SQL adalah tempat nilai. Nilainya dikirim lewat array, jadi aman dari SQL injection.
+
+### 2.3 Method `sqlite3` yang dipakai
+
+| Method | Untuk | Isi callback |
+|---|---|---|
+| `db.all(sql, params, cb)` | Ambil banyak baris | `(err, rows)`, rows berupa array |
+| `db.get(sql, params, cb)` | Ambil satu baris | `(err, row)`, row `undefined` kalau tidak ada |
+| `db.run(sql, params, cb)` | INSERT, UPDATE, DELETE | `function (err)`, ada `this.lastID` dan `this.changes` |
+
+Hasil query **hanya bisa dipakai di dalam callback**. Kalau `res.json(...)` ditulis di luar callback, response terkirim sebelum datanya ada.
+
+Untuk `db.run`, tulis callback dengan `function (err) { ... }`, bukan arrow function, supaya `this.lastID` (id data baru) bisa dibaca.
 
 ### 2.4 Server dan endpoint: `api/server.js`
 
 ```js
 const express = require("express");
 const cors = require("cors");
-const { baca, simpan, idBaru } = require("./db");
+const db = require("./db");
 
 const app = express();
 app.use(cors());
@@ -180,38 +251,30 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 8000;
 
-// Data user yang boleh dikirim ke frontend (tanpa password)
-const userPublik = (u) => ({ username: u.username, name: u.name, email: u.email, phone: u.phone });
+// Kirim error database sebagai 500
+const errorServer = (res, err) => res.status(500).json({ message: err.message });
 
-const formatLamaran = (l, db) => {
-  const user = db.users.find((u) => u.id === l.user_id);
-  return {
-    id: l.id,
-    jobId: l.lowongan_id,
-    username: user.username,
-    nama: user.name,
-    email: user.email,
-    cv: l.cv,
-    pesan: l.pesan || "",
-    tanggal: l.tanggal,
-  };
-};
-
-const tanggalSekarang = () => new Date().toISOString().slice(0, 19).replace("T", " ");
+// Query lamaran beserta data user, dengan nama kolom yang dipakai frontend
+const SQL_LAMARAN = `
+  SELECT l.id, l.lowongan_id AS jobId, u.username, u.name AS nama, u.email, l.cv, l.pesan, l.tanggal
+  FROM lamaran l JOIN users u ON u.id = l.user_id`;
 
 // GET /api/jobs?search=dev
 app.get("/api/jobs", (req, res) => {
-  const { lowongan } = baca();
-  const search = (req.query.search || "").toLowerCase();
-  const hasil = search ? lowongan.filter((j) => j.title.toLowerCase().includes(search)) : lowongan;
-  res.json(hasil);
+  const search = req.query.search || "";
+  db.all("SELECT * FROM lowongan WHERE title LIKE ? ORDER BY id", [`%${search}%`], (err, rows) => {
+    if (err) return errorServer(res, err);
+    res.json(rows);
+  });
 });
 
 // GET /api/jobs/:id
 app.get("/api/jobs/:id", (req, res) => {
-  const job = baca().lowongan.find((j) => j.id === Number(req.params.id));
-  if (!job) return res.status(404).json({ message: "Lowongan tidak ditemukan" });
-  res.json(job);
+  db.get("SELECT * FROM lowongan WHERE id = ?", [req.params.id], (err, job) => {
+    if (err) return errorServer(res, err);
+    if (!job) return res.status(404).json({ message: "Lowongan tidak ditemukan" });
+    res.json(job);
+  });
 });
 
 // POST /api/login
@@ -221,54 +284,66 @@ app.post("/api/login", (req, res) => {
     return res.status(422).json({ message: "Username dan password wajib diisi" });
   }
 
-  const user = baca().users.find((u) => u.username === username);
-  if (!user || user.password !== password) {
-    return res.status(401).json({ message: "Username atau password salah" });
-  }
-
-  res.json(userPublik(user));
+  db.get(
+    "SELECT username, name, email, phone FROM users WHERE username = ? AND password = ?",
+    [username, password],
+    (err, user) => {
+      if (err) return errorServer(res, err);
+      if (!user) return res.status(401).json({ message: "Username atau password salah" });
+      res.json(user);
+    }
+  );
 });
 
 // PUT /api/users/:username
 app.put("/api/users/:username", (req, res) => {
-  const db = baca();
-  const user = db.users.find((u) => u.username === req.params.username);
-  if (!user) return res.status(404).json({ message: "User tidak ditemukan" });
-
   const { name, email, phone, password } = req.body;
-  if (!name) return res.status(422).json({ message: "Nama tidak boleh kosong" });
-  if (!email) return res.status(422).json({ message: "Email tidak boleh kosong" });
-  if (!/^\S+@\S+\.\S+$/.test(email)) return res.status(422).json({ message: "Format email tidak valid" });
-  if (db.users.some((u) => u.email === email && u.id !== user.id)) {
-    return res.status(422).json({ message: "Email sudah dipakai user lain" });
-  }
-  if (password && password.length < 6) {
-    return res.status(422).json({ message: "Password minimal 6 karakter" });
-  }
 
-  user.name = name;
-  user.email = email;
-  user.phone = phone || "";
-  if (password) user.password = password;
-  simpan(db);
+  db.get("SELECT id FROM users WHERE username = ?", [req.params.username], (err, user) => {
+    if (err) return errorServer(res, err);
+    if (!user) return res.status(404).json({ message: "User tidak ditemukan" });
 
-  res.json(userPublik(user));
+    if (!name) return res.status(422).json({ message: "Nama tidak boleh kosong" });
+    if (!email) return res.status(422).json({ message: "Email tidak boleh kosong" });
+    if (!/^\S+@\S+\.\S+$/.test(email)) return res.status(422).json({ message: "Format email tidak valid" });
+    if (password && password.length < 6) {
+      return res.status(422).json({ message: "Password minimal 6 karakter" });
+    }
+
+    // COALESCE: kalau password kosong (null), password lama tetap dipakai
+    db.run(
+      "UPDATE users SET name = ?, email = ?, phone = ?, password = COALESCE(?, password) WHERE id = ?",
+      [name, email, phone || "", password || null, user.id],
+      (err) => {
+        if (err && err.code === "SQLITE_CONSTRAINT") {
+          return res.status(422).json({ message: "Email sudah dipakai user lain" });
+        }
+        if (err) return errorServer(res, err);
+        res.json({ username: req.params.username, name, email, phone: phone || "" });
+      }
+    );
+  });
 });
 
 // GET /api/lamaran?username=&jobId=
 app.get("/api/lamaran", (req, res) => {
-  const db = baca();
-  let list = db.lamaran;
+  const { username, jobId } = req.query;
+  let sql = SQL_LAMARAN + " WHERE 1 = 1";
+  const params = [];
 
-  if (req.query.username) {
-    const user = db.users.find((u) => u.username === req.query.username);
-    list = list.filter((l) => user && l.user_id === user.id);
+  if (username) {
+    sql += " AND u.username = ?";
+    params.push(username);
   }
-  if (req.query.jobId) {
-    list = list.filter((l) => l.lowongan_id === Number(req.query.jobId));
+  if (jobId) {
+    sql += " AND l.lowongan_id = ?";
+    params.push(jobId);
   }
 
-  res.json(list.map((l) => formatLamaran(l, db)));
+  db.all(sql + " ORDER BY l.id", params, (err, rows) => {
+    if (err) return errorServer(res, err);
+    res.json(rows);
+  });
 });
 
 // POST /api/lamaran
@@ -277,33 +352,43 @@ app.post("/api/lamaran", (req, res) => {
   if (!jobId || !username) return res.status(422).json({ message: "jobId dan username wajib diisi" });
   if (!cv) return res.status(422).json({ message: "Link CV wajib diisi" });
 
-  const db = baca();
-  const job = db.lowongan.find((j) => j.id === Number(jobId));
-  const user = db.users.find((u) => u.username === username);
-  if (!job || !user) return res.status(404).json({ message: "Lowongan atau user tidak ditemukan" });
+  db.get("SELECT id FROM lowongan WHERE id = ?", [jobId], (err, job) => {
+    if (err) return errorServer(res, err);
 
-  if (db.lamaran.some((l) => l.lowongan_id === job.id && l.user_id === user.id)) {
-    return res.status(422).json({ message: "Kamu sudah melamar lowongan ini" });
-  }
+    db.get("SELECT id FROM users WHERE username = ?", [username], (err, user) => {
+      if (err) return errorServer(res, err);
+      if (!job || !user) return res.status(404).json({ message: "Lowongan atau user tidak ditemukan" });
 
-  const lamaran = {
-    id: idBaru(db.lamaran),
-    lowongan_id: job.id,
-    user_id: user.id,
-    cv,
-    pesan: pesan || "",
-    tanggal: tanggalSekarang(),
-  };
-  db.lamaran.push(lamaran);
-  simpan(db);
+      // Pakai function biasa (bukan arrow) supaya this.lastID bisa dibaca
+      db.run(
+        "INSERT INTO lamaran (lowongan_id, user_id, cv, pesan) VALUES (?, ?, ?, ?)",
+        [job.id, user.id, cv, pesan || ""],
+        function (err) {
+          if (err && err.code === "SQLITE_CONSTRAINT") {
+            return res.status(422).json({ message: "Kamu sudah melamar lowongan ini" });
+          }
+          if (err) return errorServer(res, err);
 
-  res.status(201).json(formatLamaran(lamaran, db));
+          db.get(SQL_LAMARAN + " WHERE l.id = ?", [this.lastID], (err, lamaran) => {
+            if (err) return errorServer(res, err);
+            res.status(201).json(lamaran);
+          });
+        }
+      );
+    });
+  });
 });
 
 app.use((req, res) => res.status(404).json({ message: "Endpoint tidak ditemukan" }));
 
 app.listen(PORT, () => console.log(`KerjaKu API jalan di http://127.0.0.1:${PORT}/api`));
 ```
+
+Penjelasan bagian penting:
+- **Validasi unik oleh database.** Email kembar dan lamaran ganda ditolak oleh `UNIQUE` di tabel. Error-nya ditangkap lewat `err.code === "SQLITE_CONSTRAINT"`, lalu dikirim sebagai `422`.
+- **`JOIN`** di `SQL_LAMARAN` menggabungkan tabel `lamaran` dan `users`, supaya response berisi `username`, `nama`, dan `email`.
+- **`AS jobId`** dan **`AS nama`** mengganti nama kolom sesuai yang dipakai frontend.
+- **`COALESCE(?, password)`**: kalau password baru kosong, password lama tetap dipakai.
 
 ### 2.5 Script npm: `api/package.json`
 
@@ -313,20 +398,31 @@ Tambahkan bagian `scripts`:
 "scripts": {
   "start": "node server.js",
   "dev": "node --watch server.js",
-  "static": "node build-static.js"
+  "static": "node build-static.js",
+  "reset": "node -e \"require('fs').rmSync('data/kerjaku.db', { force: true }); console.log('Database dihapus. Jalankan server untuk membuat ulang data awal.')\""
 }
 ```
 
-`npm run dev` otomatis me-restart server setiap file disimpan.
+- `npm run dev` otomatis me-restart server setiap file disimpan.
+- `npm run reset` menghapus database. Saat server dijalankan lagi, database dibuat ulang dengan data awal.
 
-### 2.6 Jalankan server API
+### 2.6 Abaikan file database di Git: `api/.gitignore`
+
+```
+node_modules
+data/*.db
+```
+
+File database dibuat otomatis dari `db.js`, jadi tidak perlu ikut di-commit.
+
+### 2.7 Jalankan server API
 
 ```powershell
 cd api
 npm run dev
 ```
 
-Muncul tulisan `KerjaKu API jalan di http://127.0.0.1:8000/api`. Coba buka `http://127.0.0.1:8000/api/jobs` di browser. Biarkan terminal ini tetap terbuka.
+Saat pertama kali jalan, muncul tulisan `Database baru dibuat dan diisi data awal`, lalu `KerjaKu API jalan di http://127.0.0.1:8000/api`. Coba buka `http://127.0.0.1:8000/api/jobs` di browser. Biarkan terminal ini tetap terbuka.
 
 ---
 
@@ -1064,7 +1160,7 @@ Buka alamat yang muncul di Terminal 2 (biasanya `http://localhost:5173`), lalu l
 
 ### Kalau clone dari GitHub (bukan membuat dari nol)
 
-Folder `node_modules/` tidak ikut ke GitHub. Jalankan langkah berikut sekali:
+Folder `node_modules/` dan file database `kerjaku.db` tidak ikut ke GitHub. Jalankan langkah berikut sekali (database dibuat otomatis saat server pertama kali jalan):
 
 ```powershell
 # Backend
@@ -1134,7 +1230,10 @@ Koleksi Postman yang sudah jadi ada di `api/postman/KerjaKu-API.postman_collecti
 
 ### Lihat isi database
 
-Buka `api/data/db.json` di VS Code. Setiap lamaran baru atau perubahan profil langsung tersimpan di file ini.
+- **VS Code:** klik `api/data/kerjaku.db` di Explorer (perlu extension **SQLite Viewer**). Semua tabel dan isinya langsung tampil.
+- **DB Browser for SQLite** (https://sqlitebrowser.org): aplikasi gratis untuk melihat, mengedit data, dan menjalankan SQL.
+
+Setiap lamaran baru atau perubahan profil langsung tersimpan di file ini. Untuk kembali ke data awal, hentikan server, jalankan `npm run reset`, lalu jalankan server lagi.
 
 ---
 
@@ -1145,10 +1244,10 @@ Fitur opsional ini mengekspor data lowongan ke file JSON di folder `docs/api`, s
 **a. Buat file `api/build-static.js`:**
 
 ```js
-// Membuat API statis (file JSON) dari data/db.json ke folder docs/api untuk GitHub Pages
+// Membuat API statis (file JSON) dari database SQLite ke folder docs/api untuk GitHub Pages
 const fs = require("fs");
 const path = require("path");
-const { baca } = require("./db");
+const db = require("./db");
 
 const OUT = path.join(__dirname, "..", "docs", "api");
 const updatedAt = new Date().toISOString().slice(0, 10);
@@ -1163,31 +1262,35 @@ const tulis = (file, data, resource) => {
   console.log("dibuat: docs/api/" + file);
 };
 
-fs.rmSync(OUT, { recursive: true, force: true });
+// serialize: tunggu tabel dan data awal di db.js selesai dibuat dulu
+db.serialize(() => db.all("SELECT * FROM lowongan ORDER BY id", (err, jobs) => {
+  if (err) throw err;
 
-const jobs = baca().lowongan;
+  fs.rmSync(OUT, { recursive: true, force: true });
 
-// 1. Semua lowongan
-tulis("jobs.json", jobs.map(ringkas), "jobs");
+  // 1. Semua lowongan
+  tulis("jobs.json", jobs.map(ringkas), "jobs");
 
-// 2. Detail lowongan
-jobs.forEach((job) => tulis(`jobs/${job.id}.json`, job, "job"));
+  // 2. Detail lowongan
+  jobs.forEach((job) => tulis(`jobs/${job.id}.json`, job, "job"));
 
-// 3. Daftar lokasi dan lowongan per lokasi
-const perLokasi = {};
-jobs.forEach((job) => (perLokasi[job.location] ||= []).push(job));
+  // 3. Daftar lokasi dan lowongan per lokasi
+  const perLokasi = {};
+  jobs.forEach((job) => (perLokasi[job.location] ||= []).push(job));
 
-tulis(
-  "locations.json",
-  Object.keys(perLokasi).map((nama) => ({ code: slug(nama), name: nama, total_jobs: perLokasi[nama].length })),
-  "locations"
-);
+  tulis(
+    "locations.json",
+    Object.keys(perLokasi).map((nama) => ({ code: slug(nama), name: nama, total_jobs: perLokasi[nama].length })),
+    "locations"
+  );
 
-Object.entries(perLokasi).forEach(([nama, list]) => {
-  tulis(`locations/${slug(nama)}.json`, list.map(ringkas), "jobs_by_location");
-});
+  Object.entries(perLokasi).forEach(([nama, list]) => {
+    tulis(`locations/${slug(nama)}.json`, list.map(ringkas), "jobs_by_location");
+  });
 
-console.log("Selesai. Total lowongan: " + jobs.length);
+  console.log("Selesai. Total lowongan: " + jobs.length);
+  db.close();
+}));
 ```
 
 **b. Jalankan:**
@@ -1254,30 +1357,41 @@ Setiap kali kode frontend diubah, jalankan ulang `npm run build` lalu `npx cap s
 | "Tidak bisa terhubung ke server API" | Backend belum dijalankan | Jalankan `npm run dev` di folder `api` |
 | `Cannot find module 'express'` | Package belum di-install | `npm install` di folder `api` |
 | `EADDRINUSE: address already in use :::8000` | Port 8000 sudah dipakai (server lama masih jalan) | Tutup terminal lama, atau jalankan dengan port lain: `$env:PORT=8001; npm run dev` (ubah juga `VITE_API_URL`) |
-| `SyntaxError: Unexpected token` saat start | Format `db.json` rusak (kurang koma/kurung) | Perbaiki `api/data/db.json`, cek dengan formatter VS Code |
+| `Could not locate the bindings file` | Script install `sqlite3` diblokir npm | `npm install-scripts approve sqlite3` lalu `npm rebuild sqlite3` |
+| `SQLITE_ERROR: no such table` | Server membuka file database lain yang kosong | Pastikan path memakai `path.join(__dirname, "data", "kerjaku.db")` |
+| `SQLITE_ERROR: no such column` | Nama kolom di SQL salah ketik, atau tabel lama belum punya kolom baru | Cek ejaan. Kalau struktur tabel diubah, jalankan `npm run reset` |
+| `EBUSY` saat `npm run reset` | File database masih dipakai server atau SQLite Viewer | Hentikan server (`Ctrl+C`) dan tutup tab `kerjaku.db`, lalu ulangi |
+| Response kosong atau `undefined` | `res.json(...)` ditulis di luar callback | Pindahkan ke dalam callback `db.all` / `db.get` / `db.run` |
+| `this.lastID` bernilai `undefined` | Callback `db.run` memakai arrow function | Ganti menjadi `function (err) { ... }` |
 | `req.body` bernilai `undefined` | Lupa `app.use(express.json())` | Tambahkan sebelum endpoint |
 | Error CORS di console browser | Lupa `app.use(cors())` | Tambahkan di `server.js` |
 | Halaman dashboard error setelah refresh | Data login hanya disimpan di memori | Login ulang. Memang begitu desainnya. |
-| Ingin mengembalikan data awal | Data lamaran/profil sudah berubah | `git checkout api/data/db.json` |
+| Ingin mengembalikan data awal | Data lamaran/profil sudah berubah | Hentikan server, `npm run reset`, jalankan server lagi |
 
 ---
 
 ## 9. Ringkasan untuk Presentasi
 
 **"API-nya pakai apa?"**
-> REST API dengan **Node.js + Express**, format data JSON, data disimpan di file `api/data/db.json`. Frontend memanggil API memakai **Axios**.
+> REST API dengan **Node.js + Express**, format data JSON, database **SQLite** (library `sqlite3`) di file `api/data/kerjaku.db`. Frontend memanggil API memakai **Axios**.
 
 **"Alurnya bagaimana?"**
-> Halaman React memanggil fungsi di `src/data`, lalu Axios mengirim request ke Express. Express mencocokkan URL dengan route di `server.js` (`app.get`, `app.post`, `app.put`), membaca atau menyimpan data di `db.json`, lalu mengirim hasilnya sebagai JSON.
+> Halaman React memanggil fungsi di `src/data`, lalu Axios mengirim request ke Express. Express mencocokkan URL dengan route di `server.js` (`app.get`, `app.post`, `app.put`), menjalankan query SQL ke SQLite lewat `db.all`, `db.get`, atau `db.run`, lalu mengirim hasilnya sebagai JSON.
 
-**"Kenapa pakai file JSON, bukan database?"**
-> Supaya sederhana dan tidak perlu install database server. Strukturnya tetap seperti 3 tabel: `users`, `lowongan`, dan `lamaran`. Kalau dikembangkan, bisa diganti ke SQLite atau MySQL tanpa mengubah frontend.
+**"Kenapa SQLite?"**
+> SQLite tidak butuh server database. Seluruh database berupa satu file, jadi mudah dipindah dan cocok untuk aplikasi kecil. Tetap memakai SQL, tabel, relasi (foreign key), dan constraint `UNIQUE`. Kalau dikembangkan, bisa diganti ke MySQL tanpa mengubah frontend.
+
+**"Tabelnya apa saja?"**
+> Tiga tabel: `users`, `lowongan`, dan `lamaran`. Tabel `lamaran` menghubungkan user dan lowongan lewat `user_id` dan `lowongan_id`. Ada `UNIQUE(lowongan_id, user_id)` supaya satu user tidak bisa melamar lowongan yang sama dua kali.
+
+**"Database-nya dibuat bagaimana?"**
+> Di `db.js`, memakai `CREATE TABLE IF NOT EXISTS`. Saat server pertama kali jalan, file `kerjaku.db` dibuat otomatis dan diisi data awal.
 
 **"Kenapa pakai `cors` dan `express.json()`?"**
 > `cors()` mengizinkan frontend di port 5173 memanggil API di port 8000. `express.json()` membuat body request berformat JSON bisa dibaca lewat `req.body`.
 
 **"Password aman?"**
-> Belum. Password masih disimpan sebagai teks biasa di `db.json`, dan API tidak pernah mengirim password ke frontend. Pengembangan berikutnya bisa memakai **bcrypt** untuk hash password.
+> Belum. Password masih disimpan sebagai teks biasa di tabel `users`, dan API tidak pernah mengirim password ke frontend. Pengembangan berikutnya bisa memakai **bcrypt** untuk hash password.
 
 **"Sudah pakai token?"**
 > Belum. Login hanya mencocokkan username dan password, lalu data user disimpan di memori aplikasi. Pengembangan berikutnya bisa memakai **JWT** (`jsonwebtoken`) untuk autentikasi berbasis token.
