@@ -7,7 +7,7 @@ Terdiri dari dua bagian:
 | Folder | Isi |
 |---|---|
 | `docs/` | **API statis** (file JSON) seperti wilayah.id, di-hosting di GitHub Pages |
-| `api/` | **REST API Laravel + SQLite** (login, lowongan, lamaran, profil) |
+| `api/` | **REST API Node.js + Express** (login, lowongan, lamaran, profil), data di file JSON |
 
 ## 1. API Statis (GitHub Pages)
 
@@ -36,23 +36,23 @@ Contoh response `GET /api/jobs/1.json`:
 }
 ```
 
-File JSON dibuat dari database SQLite dengan perintah:
+File JSON dibuat dari `api/data/db.json` dengan perintah:
 
 ```bash
 cd api
-php artisan api:static
+npm run static
 ```
 
-## 2. REST API Laravel
+## 2. REST API Node.js (Express)
 
 Base URL lokal: `http://127.0.0.1:8000/api`
 
 | Method | Endpoint | Fungsi |
 |---|---|---|
 | GET | `/jobs?search=dev` | Daftar lowongan (bisa dicari) |
-| GET | `/jobs/{id}` | Detail lowongan |
+| GET | `/jobs/:id` | Detail lowongan |
 | POST | `/login` | Login (`username`, `password`) |
-| PUT | `/users/{username}` | Update profil (`name`, `email`, `phone`, `password`) |
+| PUT | `/users/:username` | Update profil (`name`, `email`, `phone`, `password`) |
 | GET | `/lamaran?username=&jobId=` | Daftar lamaran |
 | POST | `/lamaran` | Kirim lamaran (`jobId`, `username`, `cv`, `pesan`) |
 
@@ -60,16 +60,14 @@ Akun test: `anggia` / `kerja123` dan `admin` / `admin123`.
 
 ### Cara menjalankan
 
-Butuh PHP 8.2 dan Composer.
+Butuh Node.js (versi LTS).
 
 ```bash
 cd api
-composer install
-copy .env.example .env
-php artisan key:generate
-type nul > database\database.sqlite
-php artisan migrate --seed
-php artisan serve
+npm install
+npm run dev
 ```
+
+Data tersimpan di `api/data/db.json`. Kembalikan ke data awal dengan `git checkout api/data/db.json`.
 
 Koleksi Postman: `api/postman/KerjaKu-API.postman_collection.json`.
