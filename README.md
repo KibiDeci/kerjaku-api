@@ -1,23 +1,51 @@
-# KerjaKu - Aplikasi Lowongan Kerja (UTS)
+# KerjaKu API
 
-Aplikasi mobile **Ionic React** untuk mencari dan melamar pekerjaan. Data diambil dari **REST API Laravel** (folder `api/`) memakai **axios**.
+API data lowongan kerja untuk aplikasi **KerjaKu** (UTS Pemrograman Mobile Framework).
 
-## Struktur
+Terdiri dari dua bagian:
 
+| Folder | Isi |
+|---|---|
+| `docs/` | **API statis** (file JSON) seperti wilayah.id, di-hosting di GitHub Pages |
+| `api/` | **REST API Laravel + SQLite** (login, lowongan, lamaran, profil) |
+
+## 1. API Statis (GitHub Pages)
+
+Base URL: `https://kibideci.github.io/kerjaku-api`
+
+| Endpoint | Isi |
+|---|---|
+| `GET /api/jobs.json` | Semua lowongan |
+| `GET /api/jobs/[ID].json` | Detail lowongan |
+| `GET /api/locations.json` | Daftar lokasi |
+| `GET /api/locations/[CODE].json` | Lowongan per lokasi (mis. `jakarta`) |
+
+Contoh response `GET /api/jobs/1.json`:
+
+```json
+{
+  "data": {
+    "id": 1,
+    "title": "Frontend Developer",
+    "company": "PT Teknologi Nusantara",
+    "location": "Jakarta",
+    "salary": "Rp8.000.000",
+    "description": "Membuat tampilan website menggunakan React."
+  },
+  "meta": { "resource": "job", "updated_at": "2026-10-26" }
+}
 ```
-myApp/
-├── src/              → frontend React (Ionic)
-│   ├── data/api.js   → konfigurasi axios (alamat API)
-│   ├── data/auth.js  → login & update profil (API)
-│   ├── data/jobs.js  → daftar & detail lowongan (API)
-│   └── data/lamaran.js → kirim & cek lamaran (API)
-├── api/              → backend Laravel (REST API + SQLite)
-└── postman/          → koleksi Postman untuk tes API
+
+File JSON dibuat dari database SQLite dengan perintah:
+
+```bash
+cd api
+php artisan api:static
 ```
 
-## Endpoint API
+## 2. REST API Laravel
 
-Base URL: `http://127.0.0.1:8000/api`
+Base URL lokal: `http://127.0.0.1:8000/api`
 
 | Method | Endpoint | Fungsi |
 |---|---|---|
@@ -30,27 +58,9 @@ Base URL: `http://127.0.0.1:8000/api`
 
 Akun test: `anggia` / `kerja123` dan `admin` / `admin123`.
 
-## API Statis (seperti wilayah.id)
+### Cara menjalankan
 
-Data lowongan dari database SQLite juga diekspor menjadi file JSON statis di folder `docs/`, di-hosting gratis lewat GitHub Pages.
-
-| Endpoint | Isi |
-|---|---|
-| `/api/jobs.json` | Semua lowongan |
-| `/api/jobs/[ID].json` | Detail lowongan |
-| `/api/locations.json` | Daftar lokasi |
-| `/api/locations/[CODE].json` | Lowongan per lokasi (mis. `jakarta`) |
-
-Setelah data di database berubah, buat ulang file JSON:
-
-```bash
-cd api
-php artisan api:static
-```
-
-## Cara Menjalankan
-
-**1. Backend (API Laravel)** — butuh PHP 8.2 dan Composer
+Butuh PHP 8.2 dan Composer.
 
 ```bash
 cd api
@@ -62,13 +72,4 @@ php artisan migrate --seed
 php artisan serve
 ```
 
-API berjalan di `http://127.0.0.1:8000`.
-
-**2. Frontend** — buka terminal baru di folder utama
-
-```bash
-npm install
-npm run dev
-```
-
-Buka `http://localhost:5173`.
+Koleksi Postman: `api/postman/KerjaKu-API.postman_collection.json`.
